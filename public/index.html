@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kafeshka place | secret santa</title>
+  <link rel="stylesheet" href="./assets/css/user.css">
+</head>
+<body>
+  <a href="https://kafeshka.cc/"class="main-page-button"><- return to main page -></a>
+  <div class="top-container">
+    <div class="panel-top">
+      <p class="subtitle" style="margin: 0;">küberi helpdesk's </p>
+      <h3>secret santa!</h3>
+      <img class="lol" src="./assets/imgs/sasha.jpg">
+    </div>
+  </div>
+  <div class="container">
+    <div class="panel">
+      <img src="./assets/imgs/ysan.jpg" class="main-img">
+      <h2>I'm a Secret Santa!</h2>
+      <p class="subtitle">Enter your code to see who you're gifting to</p>
+      <div id="leftCodeEntry">
+        <div class="input-group">
+          <label for="leftCode">ENTER YOUR CODE</label>
+          <input type="text" id="leftCode" placeholder="e.g., 6fc37d" maxlength="10">
+        </div>
+        <button id="submitCodeBtn">Submit Code</button>
+        <div id="leftError" class="error-msg hidden"></div>
+      </div>
+      
+      <div id="leftAssignment" class="hidden">
+        <button class="logout-btn" id="userLogoutBtn">Log out</button>
+        
+        <div class="assignment-box">
+          <h3>YOU NEED TO GIFT TO</h3>
+          <div class="name" id="giftToName"></div>
+        </div>
+
+        <div class="info-note" style="margin-top: 20px;">
+          🎁 <strong>About the first 2 gifts:</strong> They need to be small! Either a chocolate bar or a Monster drink! Not more than 5 euros!
+        </div>
+        
+        <div class="hints-container">
+          <p style="color: #666; margin-bottom: 15px;">Provide hints to help them find your gifts:</p>
+          
+          
+          <div class="hint-group">
+            <label for="hint1">🎁 Hint 1 - Where is the first gift?</label>
+            <textarea id="hint1" placeholder="e.g., Behind the vending machine on the first floor"></textarea>
+            <button class="saveHintBtn" data-hint-number="1">💾 Save Hint 1</button>
+            <div id="saveMsg1" class="hidden"></div>
+          </div>
+          
+          <div class="hint-group">
+            <label for="hint2">🎁 Hint 2 - Where is the second gift?</label>
+            <textarea id="hint2" placeholder="e.g., You have to say 'bomboclat' to the cafeteria workers to get the gift in SOC"></textarea>
+            <button class="saveHintBtn" data-hint-number="2">💾 Save Hint 2</button>
+            <div id="saveMsg2" class="hidden"></div>
+          </div>
+          
+          <div class="hint-group">
+            <label for="hint3">📜 Hint 3 - Where is the paper with your code?</label>
+            <textarea id="hint3" placeholder="e.g., Check Valdo's jacket pockets"></textarea>
+            <button class="saveHintBtn" data-hint-number="3">💾 Save Hint 3</button>
+            <div id="saveMsg3" class="hidden"></div>
+          </div>
+          
+          <div class="info-note">
+            <strong>Hint 3:</strong> Write your code on paper, hide it, and tell them where to find it. When they find your code, they can reveal you as their Secret Santa!
+          </div>
+        </div>
+      
+      </div>
+    </div>
+    
+    <!-- Right Panel: Receive Gifts -->
+    <div class="panel">
+      <img src="./assets/imgs/tree.jpg" class="main-img">
+      <h2>I'm Receiving Gifts</h2>
+      <p class="subtitle">Hints from your Secret Santa</p>
+      <div id="rightCodePlaceholder">
+        <div class="info-note" style="margin-top: 20px;">
+          💡 <strong>Unlock me!</strong> Place the code on the left and this panel will open!
+        </div>
+      </div>
+      <div id="rightAssignment" class="hidden">
+        <div class="info-note" style="margin-top: 20px;">
+                  <strong>When are the dates?</strong><br> 
+                  <li>🎁 First Gift - ICO, Wednesday, December 10, 16:00</li>
+                  <li>🎁 Second Gift - TalTech Main Building, Wednesday, December 17, 16:00</li>
+                  <li>📜 Paper & Last Gift - old town??? im not quite sure xD</li>
+                  
+                </div>
+              
+              <div id="rightHints">
+                <div class="santa-message">
+                  <h3>HO HO HO!</h3>
+                  <p style="color: #666;">Your Secret Santa has left you these hints:</p>
+                </div>
+                
+                <div id="hintsDisplay">
+                  <div class="hint-item">
+                    <strong>🎁 First Gift Location - ICO:</strong><br>
+                    <span id="displayHint1">Enter your code on the left panel first!</span>
+                  </div>
+                  <div class="hint-item">
+                    <strong>🎁 Second Gift Location - TalTech Main Building:</strong><br>
+                    <span id="displayHint2">Enter your code on the left panel first!</span>
+                  </div>
+                  <div class="hint-item">
+                    <strong>📜 Code Paper Location - :</strong><br>
+                    <span id="displayHint3">Enter your code on the left panel first!</span>
+                  </div>
+                </div>
+                
+                
+                <div class="reveal-box">
+                  <div class="info-note" style="margin-top: -10px;">
+                  💡 <strong>Next Step:</strong> Use Hint 3 to find the paper with your Secret Santa's code, then enter it in the panel's reveal box! After you do, approach your Secret Santa and show them that you found them! They will give you the gift!
+                  </div>
+                  <div class="input-group">
+                    <label for="revealCode">ENTER CODE TO REVEAL WHO WAS YOUR SECRET SANTA</label>
+                    <input type="text" id="revealCode" placeholder="Enter the code from the paper you found">
+                  </div>
+                  <button id="revealSantaBtn">Reveal My Secret Santa</button>
+                  <div id="revealMessage" class="hidden"></div>
+                </div>
+              </div>
+      </div>
+    </div>
+  </div>
+<script src="./assets/js/user.js"></script>
+</body>
+</html>

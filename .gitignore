@@ -1,0 +1,6 @@
+node_modules
+.env
+secret_santa.db
+secret_santa.db-shm
+secret_santa.db-wal
+package-lock.json

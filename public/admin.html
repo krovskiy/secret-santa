@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kafeshka.cc | secret santa</title>
+  <link rel="stylesheet" href="./assets/css/admin.css">
+</head>
+<body>
+  <div id="loginPanel" class="login-panel">
+    <h1>admin control</h1>
+    <p class="subtitle">can you believe it guys? christmas? just a few months away</p>
+    
+    <div class="input-group">
+      <label for="password">password</label>
+      <input type="password" id="password" placeholder="enter admin password">
+    </div>
+    
+    <button id="loginBtn">Login</button>
+    <div id="loginError" class="error-msg hidden"></div>
+  </div>
+
+  <div id="adminPanel" class="admin-panel hidden">
+    <div style="display: flex; align-items: center; margin-bottom: 20px; flex-direction: column;">
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+      <h1 style="text-align: center;">admin control</h1>
+    </div>
+    <p class="subtitle">secret santa mgmt panel</p>
+    
+    <div class="warning">
+      <strong>Warning:</strong> Regenerating codes will reset all assignments and delete existing hints! All participants will need new codes.
+    </div>
+    
+    <button id="regenerateBtn">Regenerate All Codes & Assignments</button>
+    
+    <div id="codesDisplay" class="codes-display hidden">
+      <div class="success-banner">Codes Generated Successfully!</div>
+      <h3>Share These Codes With Participants</h3>
+      <div id="codesList"></div>
+    </div>
+    
+    <div id="currentAssignments" class="codes-display" style="margin-top: 20px;">
+      <h3>Current Participants & Assignments</h3>
+      <div id="assignmentsList">
+        <p style="text-align: center; color: #666;">Loading...</p>
+      </div>
+    </div>
+    
+    <div class="info-box" style="margin-top: 20px;">
+      <strong>How to Use:</strong><br>
+      • Click on a participant card to expand/collapse and see their hints<br>
+      • Click "Gives to: [Hidden]" to reveal who they're gifting to<br>
+      • Participants: <strong id="participantNames">Loading...</strong><br>
+      • Page auto-refreshes every 5 seconds to show new hints
+    </div>
+  </div>
+  
+<script src="./assets/js/admin.js"></script>
+</body>
+</html>
