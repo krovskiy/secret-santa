@@ -1,6 +1,6 @@
 {
   "name": "secret-santa-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Secret Santa web application",
   "main": "server.js",
   "scripts": {
