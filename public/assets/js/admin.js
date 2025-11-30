@@ -1,13 +1,12 @@
     let isLoggedIn = false;
     let refreshInterval = null;
     let revealedGifts = new Set(); 
-    let expandedCards = new Set(); 
+    let expandedCards = new Set();
     
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const response = await fetch('/api/admin/check-session');
         const data = await response.json();
-        console.debug('loadCurrentParticipants: revealedGifts=', Array.from(revealedGifts));
         
         if (data.authenticated) {
           isLoggedIn = true;
@@ -16,13 +15,10 @@
           loadCurrentParticipants();
           startAutoRefresh();
         }
-        
-        // Add event listeners
         document.getElementById('loginBtn').addEventListener('click', login);
         document.getElementById('logoutBtn').addEventListener('click', logout);
         document.getElementById('regenerateBtn').addEventListener('click', regenerateCodes);
         
-        // Allow Enter key in password field
         document.getElementById('password').addEventListener('keypress', (e) => {
           if (e.key === 'Enter') login();
         });
@@ -118,7 +114,6 @@
       try {
         const response = await fetch('/api/admin/participants');
         const data = await response.json();
-        // Populate participant names in the info box
         try {
           const namesEl = document.getElementById('participantNames');
           if (namesEl) {
@@ -226,7 +221,6 @@
     }
     
     function attachDynamicListeners() {
-      // Participant card click to toggle hints
       document.querySelectorAll('[data-action="toggle-hints"]').forEach(card => {
         card.addEventListener('click', (e) => {
           if (e.target.closest('[data-action="prevents-parent"]')) {
@@ -237,7 +231,6 @@
         });
       });
       
-      // Toggle gift reveal
       document.querySelectorAll('[data-action="toggle-gift"]').forEach(el => {
         el.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -246,7 +239,6 @@
         });
       });
       
-      // Copy code button
       document.querySelectorAll('[data-action="copy-code"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();

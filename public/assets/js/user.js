@@ -1,6 +1,5 @@
     let currentCode = '';
     
-    // Check session on page load
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const response = await fetch('/api/check-session');
@@ -11,12 +10,10 @@
           loadUserData(data);
         }
         
-        // Add event listeners
         document.getElementById('submitCodeBtn').addEventListener('click', verifyCode);
         document.getElementById('userLogoutBtn').addEventListener('click', logout);
         document.getElementById('revealSantaBtn').addEventListener('click', revealSanta);
         
-        // Add listeners to dynamic hint save buttons
         document.querySelectorAll('.saveHintBtn').forEach(btn => {
           btn.addEventListener('click', (e) => {
             const hintNumber = e.target.getAttribute('data-hint-number');
@@ -24,7 +21,6 @@
           });
         });
         
-        // Allow Enter key in code field
         document.getElementById('leftCode').addEventListener('keypress', (e) => {
           if (e.key === 'Enter') verifyCode();
         });
@@ -64,14 +60,12 @@
     }
     
     function loadUserData(data) {
-      // Load left panel (giving)
       document.getElementById('giftToName').textContent = data.giveData.gives_to_name;
       document.getElementById('leftCodeEntry').classList.add('hidden');
       document.getElementById('rightCodePlaceholder').classList.add('hidden');
       document.getElementById('leftAssignment').classList.remove('hidden');
       document.getElementById('rightAssignment').classList.remove('hidden');
       
-      // Load right panel (receiving) hints
       const receiveData = data.receiveData;
       document.getElementById('displayHint1').textContent = 
         receiveData.hint1 || 'Your Secret Santa hasn\'t set this hint yet!';
@@ -79,6 +73,31 @@
         receiveData.hint2 || 'Your Secret Santa hasn\'t set this hint yet!';
       document.getElementById('displayHint3').textContent = 
         receiveData.hint3 || 'Your Secret Santa hasn\'t set this hint yet!';
+      
+      fetchUserHints(currentCode);
+    }
+    
+    async function fetchUserHints(code) {
+      try {
+        const response = await fetch(`/api/get-hints?code=${encodeURIComponent(code)}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          document.getElementById('hint1').value = data.hint1 || '';
+          document.getElementById('hint2').value = data.hint2 || '';
+          document.getElementById('hint3').value = data.hint3 || '';
+          
+          displaySavedHints(data.hint1, data.hint2, data.hint3);
+        }
+      } catch (error) {
+        console.error('Error fetching hints:', error);
+      }
+    }
+    
+    function displaySavedHints(hint1, hint2, hint3) {
+      document.getElementById('displaySavedHint1').textContent = hint1 || 'Not set yet';
+      document.getElementById('displaySavedHint2').textContent = hint2 || 'Not set yet';
+      document.getElementById('displaySavedHint3').textContent = hint3 || 'Not set yet';
     }
     
     async function saveHint(hintNumber) {
@@ -104,6 +123,7 @@
         
         if (data.success) {
           showHintMessage(hintNumber, `✅ Hint ${hintNumber} saved!`, 'success');
+          document.getElementById(`displaySavedHint${hintNumber}`).textContent = hintText;
         } else {
           showHintMessage(hintNumber, 'Error saving hint', 'error');
         }

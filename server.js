@@ -15,19 +15,15 @@ if (!ADMIN_PASSWORD_HASH) {
   console.warn('Warning: ADMIN_PASS_HASH is not set. Admin login will fail unless ADMIN_PASS_HASH is provided in environment or .env file.');
 }
 
-
-// Predefined participants
 const PARTICIPANT_NAMES = ['Britten', 'Manivald', 'Dima', 'Sasha', 'Henrik', 'Andreas'];
 
-// Middleware
 app.use(helmet());
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
-app.use(express.static('public'));
 app.set('trust proxy', 1);
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Rate limiters
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // 5 attempts per IP
@@ -36,14 +32,11 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Database setup
 const db = new sqlite3.Database('./secret_santa.db', (err) => {
   if (err) console.error(err.message);
   console.log('Connected to SQLite database.');
-  
 });
 
-// Initialize database tables
 db.serialize(() => {
   db.run("PRAGMA journal_mode = WAL;");
   db.run(`CREATE TABLE IF NOT EXISTS participants (
@@ -63,7 +56,6 @@ function generateCode() {
   return crypto.randomBytes(3).toString('hex');
 }
 
-
 function shuffleArray(array) {
   const arr = [...array];
   for (let i = arr.length - 1; i > 0; i--) {
@@ -72,8 +64,6 @@ function shuffleArray(array) {
   }
   return arr;
 }
-
-// API Routes
 
 app.post('/api/admin/login', loginLimiter, (req, res) => {
   const { password } = req.body;
@@ -85,31 +75,27 @@ app.post('/api/admin/login', loginLimiter, (req, res) => {
   const hash = crypto.createHash('sha256').update(password).digest('hex');
   
   if (hash === ADMIN_PASSWORD_HASH) {
-  res.cookie('admin_session', crypto.randomBytes(32).toString('hex'), {
+    res.cookie('admin_session', crypto.randomBytes(32).toString('hex'), {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
     sameSite: 'strict',
     secure: (process.env.NODE_ENV === 'production')
-  });
-
+    });
     res.json({ success: true });
   } else {
     res.json({ success: false, message: 'Invalid password' });
   }
 });
 
-
 app.post('/api/admin/logout', (req, res) => {
   res.clearCookie('admin_session');
   res.json({ success: true });
 });
 
-
 app.get('/api/admin/check-session', (req, res) => {
   const isAuthenticated = !!req.cookies.admin_session;
   res.json({ authenticated: isAuthenticated });
 });
-
 
 app.get('/api/admin/participants', (req, res) => {
   if (!req.cookies.admin_session) {
@@ -129,7 +115,6 @@ app.get('/api/admin/participants', (req, res) => {
   });
 });
 
-
 app.post('/api/admin/regenerate', (req, res) => {
   if (!req.cookies.admin_session) {
     res.status(401).json({ error: 'Unauthorized' });
@@ -137,13 +122,11 @@ app.post('/api/admin/regenerate', (req, res) => {
   }
   
   db.serialize(() => {
-
     db.run('DELETE FROM participants', (err) => {
       if (err) {
         res.status(500).json({ error: err.message });
         return;
       }
-
       const codes = PARTICIPANT_NAMES.map(() => generateCode());
       const insertPromises = PARTICIPANT_NAMES.map((name, index) => {
         return new Promise((resolve, reject) => {
@@ -158,7 +141,6 @@ app.post('/api/admin/regenerate', (req, res) => {
       });
       
       Promise.all(insertPromises).then(ids => {
-        // Create circular assignment (shuffled so it's random)
         const shuffledIds = shuffleArray(ids);
         const updatePromises = shuffledIds.map((id, index) => {
           const givesToId = shuffledIds[(index + 1) % shuffledIds.length];
@@ -175,7 +157,6 @@ app.post('/api/admin/regenerate', (req, res) => {
         
         return Promise.all(updatePromises);
       }).then(() => {
-        // Fetch results
         db.all(`SELECT p1.name, p1.code, p2.name as gives_to_name 
                 FROM participants p1
                 JOIN participants p2 ON p1.gives_to_id = p2.id
@@ -193,7 +174,6 @@ app.post('/api/admin/regenerate', (req, res) => {
   });
 });
 
-// Verify code and get full assignment (both give and receive)
 app.post('/api/verify-code', (req, res) => {
   const { code } = req.body;
   
@@ -213,8 +193,6 @@ app.post('/api/verify-code', (req, res) => {
       res.json({ success: false, message: 'Invalid code' });
       return;
     }
-    
-    // Get receive data (who gives TO this person)
     db.get(`SELECT p1.name as santa_name, p1.hint1, p1.hint2, p1.hint3, p1.code as santa_code
             FROM participants p1
             JOIN participants p2 ON p1.gives_to_id = p2.id
@@ -223,9 +201,8 @@ app.post('/api/verify-code', (req, res) => {
         res.status(500).json({ error: err.message });
         return;
       }
-    
       res.cookie('user_code', code, { 
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         secure: (process.env.NODE_ENV === 'production'),     
         sameSite: 'strict',    
@@ -240,7 +217,6 @@ app.post('/api/verify-code', (req, res) => {
     });
   });
 });
-
 
 app.get('/api/check-session', (req, res) => {
   const code = req.cookies.user_code;
@@ -276,7 +252,6 @@ app.get('/api/check-session', (req, res) => {
   });
 });
 
-// User logout
 app.post('/api/logout', (req, res) => {
   res.clearCookie('user_code');
   res.json({ success: true });
@@ -298,7 +273,6 @@ app.post('/api/save-hint', (req, res) => {
   if (!allowedHints.includes(String(hintNumber))) {
     return res.status(400).json({ error: 'Invalid hint number' });
   }
-
   const column = `hint${hintNumber}`;
 
   db.run(`UPDATE participants SET ${column} = ? WHERE code = ?`,
@@ -311,12 +285,8 @@ app.post('/api/save-hint', (req, res) => {
     });
 });
 
-
-
 app.post('/api/get-hints', (req, res) => {
   const { code } = req.body;
-  
-  
   db.get(`SELECT p1.name as santa_name, p1.hint1, p1.hint2, p1.hint3, p1.code as santa_code
           FROM participants p1
           JOIN participants p2 ON p1.gives_to_id = p2.id
@@ -333,11 +303,8 @@ app.post('/api/get-hints', (req, res) => {
   });
 });
 
-
 app.post('/api/reveal-santa', (req, res) => {
   const { code } = req.body;
-  
-  
   db.get(`SELECT p1.name as santa_name, p2.name as recipient_name
           FROM participants p1
           JOIN participants p2 ON p1.gives_to_id = p2.id
@@ -358,7 +325,6 @@ app.post('/api/reveal-santa', (req, res) => {
   });
 });
 
-
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -367,11 +333,9 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-
 app.listen(PORT, () => {
   console.log(`Secret Santa server running on port ${PORT}`);
 });
-
 
 process.on('SIGINT', () => {
   db.close((err) => {

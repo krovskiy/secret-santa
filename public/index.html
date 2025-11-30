@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>kafeshka place | secret santa</title>
-  <link rel="stylesheet" href="./assets/css/user.css">
+  <link rel="stylesheet" href="assets/css/user.css">
+  <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="secret santa" />
+  <link rel="manifest" href="site.webmanifest" />
 </head>
 <body>
   <a href="https://kafeshka.cc/"class="main-page-button"><- return to main page -></a>
@@ -12,12 +18,12 @@
     <div class="panel-top">
       <p class="subtitle" style="margin: 0;">küberi helpdesk's </p>
       <h3>secret santa!</h3>
-      <img class="lol" src="./assets/imgs/sasha.jpg">
+      <img class="lol" src="assets/imgs/sasha.jpg">
     </div>
   </div>
   <div class="container">
     <div class="panel">
-      <img src="./assets/imgs/ysan.jpg" class="main-img">
+      <img src="assets/imgs/ysan.jpg" class="main-img">
       <h2>I'm a Secret Santa!</h2>
       <p class="subtitle">Enter your code to see who you're gifting to</p>
       <div id="leftCodeEntry">
@@ -69,6 +75,19 @@
           <div class="info-note">
             <strong>Hint 3:</strong> Write your code on paper, hide it, and tell them where to find it. When they find your code, they can reveal you as their Secret Santa!
           </div>
+
+          <div class="saved-hints-display" style="margin-top: 30px; padding: 15px; background: rgba(200, 255, 200, 0.1); border-radius: 12px;">
+            <p style="color: #666; margin-bottom: 15px;"><strong>Your Saved Hints:</strong></p>
+            <div class="saved-hint-item">
+              <strong>🎁 Hint 1:</strong> <span id="displaySavedHint1" style="color: #666;">Not set yet</span>
+            </div>
+            <div class="saved-hint-item" style="margin-top: 10px;">
+              <strong>🎁 Hint 2:</strong> <span id="displaySavedHint2" style="color: #666;">Not set yet</span>
+            </div>
+            <div class="saved-hint-item" style="margin-top: 10px;">
+              <strong>📜 Hint 3:</strong> <span id="displaySavedHint3" style="color: #666;">Not set yet</span>
+            </div>
+          </div>
         </div>
       
       </div>
@@ -76,7 +95,7 @@
     
     <!-- Right Panel: Receive Gifts -->
     <div class="panel">
-      <img src="./assets/imgs/tree.jpg" class="main-img">
+      <img src="assets/imgs/tree.jpg" class="main-img">
       <h2>I'm Receiving Gifts</h2>
       <p class="subtitle">Hints from your Secret Santa</p>
       <div id="rightCodePlaceholder">
@@ -130,6 +149,6 @@
       </div>
     </div>
   </div>
-<script src="./assets/js/user.js"></script>
+<script src="assets/js/user.js"></script>
 </body>
 </html>
